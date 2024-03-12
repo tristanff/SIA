@@ -1,87 +1,40 @@
-from catching import attempt_catch
-from pokemon import PokemonFactory, StatusEffect
-import json
-import random
+# Author : Tristan Flechard ---- 07/03/2024
+
 import matplotlib.pyplot as plt
+from pokemon import PokemonFactory, StatusEffect
+from catching import attempt_catch
 
+factory = PokemonFactory("pokemon.json")
+num_attempts = 100
+noise_level = 0.15
 
-if __name__ == "__main__":
-    factory = PokemonFactory("pokemon.json")
-    snorlax = factory.create("snorlax", 100, StatusEffect.NONE, 1)
-    print("No noise: ", attempt_catch(snorlax, "heavyball"))
-    for _ in range(10):
-        print("Noisy: ", attempt_catch(snorlax, "heavyball", 0.15))
-######################### Question 1 ######################################################
-    factory = PokemonFactory("pokemon.json")
-    num_attempts = 100
-    noise_level = 0.15
+pokemonName_list = ["snorlax", "jolteon", "caterpie", "onix", "mewtwo"]
+ball_types = ['pokeball', 'ultraball', 'fastball' , 'heavyball']
 
-    pokemonName_list = ["snorlax", "jolteon", "caterpie", "onix", "mewtwo"]
-    ball_types = ['pokeball', 'ultraball', 'fastball' , 'heavyball']
-    # The tab that contains the pokemon objects
-    pokemons = []
+# Create a nested dictionary to store success rates for all pokemon and all ball types
+success_rates_dict = {pokemon: {ball_type: [] for ball_type in ball_types} for pokemon in pokemonName_list}
 
-    for pokemon_name in pokemonName_list:
-        pokemon = factory.create(pokemon_name, 100, StatusEffect.NONE, 1)
-        pokemons.append(pokemon)
-
-    success_rates = []
-    for pokemon in pokemons:
+# Loop for each pokemon
+for pokemon_name in pokemonName_list:
+    pokemon = factory.create(pokemon_name, 100, StatusEffect.NONE, 1)
+    for ball_type in ball_types:
         success_count = 0
         for _ in range(num_attempts):
-            attempt_result, capture_rate = attempt_catch(pokemon, 'heavyball', noise_level)
+            attempt_result, capture_rate = attempt_catch(pokemon, ball_type, noise_level)
             if attempt_result:
                 success_count += 1
         success_rate = success_count / num_attempts
-        success_rates.append(success_rate)
+        # Append the success rate to the appropriate list in the nested dictionary
+        success_rates_dict[pokemon_name][ball_type].append(success_rate)
 
-    plt.bar(pokemonName_list, success_rates)
-    plt.xlabel('Pokémon')
-    plt.ylabel('Success Rate')
-    plt.title('Success Rate of Catching Pokémon')
-    plt.show()
-    ############################################### Question 2 ##########################################################"
-    tab_succes_rates = {}
-    success_rates_dict = {}
-    for pokemon in pokemons:
-        for ball_type in ball_types:
-            success_count = 0
-            for _ in range(num_attempts):
-                attempt_result , attempt_probability = attempt_catch(pokemon, ball_type, noise_level)
-                if attempt_result:
-                    success_count += 1
-            success_rate = success_count / num_attempts
-            success_rates_dict[ball_type] = success_rate
-        tab_succes_rates[pokemon.name] = success_rates_dict
-    print(tab_succes_rates)
+# Calculate the average success rate for each pokemon and each ball type
+average_success_rates = {pokemon: {ball_type: sum(success_rates) / len(success_rates) for ball_type, success_rates in rates.items()} for pokemon, rates in success_rates_dict.items()}
 
-    dict_pokestats = {'pokeball' : 0.0 , 'fastball' : 0.0 , 'ultraball' : 0.0 , 'heavyball' : 0}
-    for pokestat in tab_succes_rates.values():
-        dict_pokestats['heavyball']+= pokestat['heavyball']
-        dict_pokestats['fastball']+=pokestat['fastball']
-        dict_pokestats['ultraball']+=pokestat['ultraball']
-        dict_pokestats['pokeball'] += pokestat['pokeball']
-
-
-    dict_pokestats['heavyball'] = dict_pokestats['heavyball'] / 5
-    dict_pokestats['fastball'] = dict_pokestats['fastball'] / 5
-    dict_pokestats['ultraball'] = dict_pokestats['ultraball'] / 5
-    dict_pokestats['pokeball'] = dict_pokestats['pokeball'] /5
-    print(dict_pokestats)
-
-    plt.bar(dict_pokestats.keys(), dict_pokestats.values())
+# Plot the average success rates for each pokemon and each ball type
+for pokemon, rates in average_success_rates.items():
+    plt.figure()
+    plt.bar(rates.keys(), rates.values())
     plt.xlabel('Ball Type')
     plt.ylabel('Success Rate')
-    plt.title('Success'
-              ' Rates for Different Ball Types')
+    plt.title(f'Success Rate of Catching {pokemon.capitalize()} with Different Ball Types')
     plt.show()
-
-    for pokemon, rates in tab_succes_rates.items():
-        plt.figure()
-        plt.bar(rates.keys(), rates.values())
-        plt.xlabel('Ball Type')
-        plt.ylabel('Success Rate')
-        plt.title(f'Success Rate of Catching {pokemon.capitalize()} with Different Ball Types')
-        plt.show()
-
-
