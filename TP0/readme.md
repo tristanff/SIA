@@ -7,7 +7,7 @@
 ![Pokeballs.png](images%2FPokeballs.png)
 
 
-<h3> b) ¿Es cierto que algunas pokebolas son más o menos efectivas dependiendo de propiedades intrı́nsecas de cada Pokemon? <\h3>
+<h3> b) ¿Es cierto que algunas pokebolas son más o menos efectivas dependiendo de propiedades intrı́nsecas de cada Pokemon? <h3>
 
 Como se puede ver en los graficos abajo hay pokebolas que son mas efectivas con unos pokemons. Por ejemplo Mewto solo se puede atrapar con una fastball, mientras es mas efectivo atrapar Snorlax o Caterpie con ultraballs.
 
