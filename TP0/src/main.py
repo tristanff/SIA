@@ -50,3 +50,30 @@ plt.xlabel('Ball Type')
 plt.ylabel('Average Success Rate for All Pokemon')
 plt.title('Average Success Rate for All Pokemon with Different Ball Types')
 plt.show()
+
+
+for pokemon_name in pokemonName_list:
+    for ball_type in ball_types:
+        # Initialize lists to store HP and success rate data for this pokemon and ball type
+        hp_list = []
+        success_rate_list = []
+
+        # Loop over HP values from 10 to 100 with step size 10
+        for hp in range(10, 101, 10):
+            pokemon = factory.create(pokemon_name, hp, StatusEffect.NONE, 1)
+            success_count = 0
+            for _ in range(num_attempts):
+                attempt_result, capture_rate = attempt_catch(pokemon, ball_type, noise_level)
+                if attempt_result:
+                    success_count += 1
+            success_rate = success_count / num_attempts
+            hp_list.append(hp)
+            success_rate_list.append(success_rate)
+
+        # Plot the success rates for this pokemon and ball type
+        plt.plot(hp_list, success_rate_list, label=pokemon_name)
+        plt.xlabel('HP')
+        plt.ylabel('Success Rate')
+        plt.title(f'Success Rate for {ball_type}')
+        plt.legend()
+        plt.show()
