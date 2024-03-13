@@ -38,3 +38,20 @@ for pokemon, rates in average_success_rates.items():
     plt.ylabel('Success Rate')
     plt.title(f'Success Rate of Catching {pokemon.capitalize()} with Different Ball Types')
     plt.show()
+
+success_rates_ratio_dict = {pokemon: {ball_type: 0 for ball_type in ball_types} for pokemon in pokemonName_list}
+
+
+basic_ball_success_rate = success_rates_dict[pokemon.name]['pokeball']
+for ball_type in ball_types:
+    success_rate_ratio = success_rates_dict[pokemon.name][ball_type] / basic_ball_success_rate
+    success_rates_ratio_dict[pokemon.name][ball_type] = success_rate_ratio
+
+
+for pokemon, rates in success_rates_ratio_dict.items():
+    plt.figure()
+    plt.bar(rates.keys(), rates.values())
+    plt.xlabel('Ball Type')
+    plt.ylabel('Success Rate Ratio')
+    plt.title(f'Success Rate Ratio of Catching {pokemon.capitalize()} with Different Ball Types')
+    plt.show()
