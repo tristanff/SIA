@@ -27,6 +27,7 @@ for pokemon_name in pokemonName_list:
         # Append the success rate to the appropriate list in the nested dictionary
         success_rates_dict[pokemon_name][ball_type].append(success_rate)
 
+
 # Calculate the average success rate for each pokemon and each ball type
 average_success_rates = {pokemon: {ball_type: sum(success_rates) / len(success_rates) for ball_type, success_rates in rates.items()} for pokemon, rates in success_rates_dict.items()}
 
@@ -39,19 +40,13 @@ for pokemon, rates in average_success_rates.items():
     plt.title(f'Success Rate of Catching {pokemon.capitalize()} with Different Ball Types')
     plt.show()
 
-success_rates_ratio_dict = {pokemon: {ball_type: 0 for ball_type in ball_types} for pokemon in pokemonName_list}
 
+# Calculate the average success rate for all pokemons for each ball type
+average_success_rates_all_pokemon = {ball_type: sum([rates[ball_type] for pokemon, rates in average_success_rates.items()])/len(pokemonName_list) for ball_type in ball_types}
 
-basic_ball_success_rate = success_rates_dict[pokemon.name]['pokeball']
-for ball_type in ball_types:
-    success_rate_ratio = success_rates_dict[pokemon.name][ball_type] / basic_ball_success_rate
-    success_rates_ratio_dict[pokemon.name][ball_type] = success_rate_ratio
-
-
-for pokemon, rates in success_rates_ratio_dict.items():
-    plt.figure()
-    plt.bar(rates.keys(), rates.values())
-    plt.xlabel('Ball Type')
-    plt.ylabel('Success Rate Ratio')
-    plt.title(f'Success Rate Ratio of Catching {pokemon.capitalize()} with Different Ball Types')
-    plt.show()
+plt.figure()
+plt.bar(average_success_rates_all_pokemon.keys(), average_success_rates_all_pokemon.values())
+plt.xlabel('Ball Type')
+plt.ylabel('Average Success Rate for All Pokemon')
+plt.title('Average Success Rate for All Pokemon with Different Ball Types')
+plt.show()
